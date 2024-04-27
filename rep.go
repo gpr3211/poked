@@ -11,7 +11,9 @@ func startRep(cfg *config) error {
 	reader := bufio.NewScanner(os.Stdin)
 	fmt.Println("Hello, type 'help' to see a list of commands ")
 	for {
+		fmt.Println("")
 		fmt.Print("Enter command: ")
+		fmt.Println("")
 		reader.Scan()
 		words := normInput(reader.Text())
 		if len(words) == 0 {

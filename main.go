@@ -1,6 +1,9 @@
 package main
 
-import "main/pokeapi"
+import (
+	"main/pokeapi"
+	"time"
+)
 
 type config struct {
 	pokeapiClient   pokeapi.Client
@@ -9,9 +12,10 @@ type config struct {
 }
 
 func main() {
-	// init client. ommiting prev and next at init sets them to nil
+	// init client. ommiting prev and onext at init sets them to nil
+	pokeClient := pokeapi.NewClient(5*time.Second, time.Minute*5)
 	cfg := config{
-		pokeapiClient: pokeapi.NewClient(),
+		pokeapiClient: pokeClient,
 	}
 
 	startRep(&cfg)
