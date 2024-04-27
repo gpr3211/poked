@@ -50,3 +50,44 @@ func (c *Client) ListLocations(page *string) (LocationsList, error) { // Method 
 	c.cache.Add(full, data)
 	return locations, nil
 }
+func (c *Client) ListArea(LocationAreaName string) (LocationArea, error) { // Method on client
+
+	endpoint := "/location-area/" + LocationAreaName
+	full := baseURL + endpoint
+
+	data, ok := c.cache.Get(full)
+	if ok { //cache hit
+		fmt.Println("cache hit")
+		locationAr := LocationArea{}
+
+		err := json.Unmarshal(data, &locationAr)
+		fmt.Println("json done")
+		if err != nil {
+			return LocationArea{}, err
+		}
+		return locationAr, nil
+	}
+
+	req, err := http.NewRequest("GET", full, nil)
+	if err != nil {
+		return LocationArea{}, err
+	}
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return LocationArea{}, err
+	}
+	if resp.StatusCode > 399 {
+		return LocationArea{}, fmt.Errorf("Bad status code: %v", resp.StatusCode)
+	}
+	data, err = io.ReadAll(resp.Body)
+	if err != nil {
+		return LocationArea{}, err
+	}
+	locations := LocationArea{}
+	err = json.Unmarshal(data, &locations)
+	if err != nil {
+		return LocationArea{}, err
+	}
+	c.cache.Add(full, data)
+	return locations, nil
+}

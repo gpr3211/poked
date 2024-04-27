@@ -20,9 +20,13 @@ func startRep(cfg *config) error {
 			continue
 		}
 		command := words[0]
+		args := []string{}
+		if len(words) > 1 {
+			args = words[1:]
+		}
 		commands, exists := getCommands()[command]
 		if exists {
-			err := commands.callback(cfg)
+			err := commands.callback(cfg, args...)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -41,38 +45,37 @@ func normInput(text string) []string {
 }
 
 type cliCommand struct {
-	id          int
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*config, ...string) error
 }
 
 func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
 		"help": {
-			id:          0,
 			name:        "help",
 			description: "Displays help",
 			callback:    commandHelp,
 		},
 		"exit": {
-			id:          1,
 			name:        "exit",
 			description: "Exit program",
 			callback:    commandExit,
 		},
 		"map": {
-			id:          2,
 			name:        "map",
 			description: "Display locations/page forward",
 			callback:    callMap,
 		},
 		"mapb": {
-			id:          2,
 			name:        "mapb",
 			description: "Display locations/page backward",
 			callback:    callMapb,
 		},
+		"explore": {
+			name:        "explore",
+			description: "show all pokemon that populate an area",
+			callback:    callExplore,
+		},
 	}
-
 }
