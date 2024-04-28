@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"log"
 	"math/rand"
 )
 
@@ -13,6 +12,9 @@ func callCatch(cfg *config, args ...string) error {
 	}
 	name := args[0]
 	resp, err := cfg.pokeapiClient.ListStats(name)
+	if err != nil {
+		return errors.New("error")
+	}
 	base := resp.BaseExperience
 	fmt.Printf("Throwing a pokeball at %s ...\n", resp.Name)
 	randomseed := rand.Intn(base * 2)
@@ -20,11 +22,9 @@ func callCatch(cfg *config, args ...string) error {
 		fmt.Printf("You failed to catch %s\n", resp.Name)
 	} else {
 		fmt.Printf("You caught %s !!!\n", resp.Name)
-		cfg.pokemonCaught[name] = resp
+		cfg.pokemonCaught[resp.Name] = resp
 	}
-	if err != nil {
-		log.Fatal(resp)
-	}
+
 	fmt.Println("")
 	fmt.Println("")
 	return nil
